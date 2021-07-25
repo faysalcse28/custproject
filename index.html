@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+.ctrl{
+	width: 100%;
+	text-align: center;
+}
+
+.ctrl button{
+    width: 200px;
+    height: 30px;
+    margin: 5px;
+    background: #C5221E;
+    color: #FFF;
+    border: none;
+}
+
+.dots{
+	height: 10px;
+	width: 10px;
+	float: right;
+	background-color: #000;
+}
+
+.dots-active{
+	height: 10px;
+	width: 10px;
+	float: right;
+	background-color: #FFF;
+}
+</style>
+</head>     
+
+<body>
+
+
+</body>
+</html>
+<script type="text/javascript">
+	const windowHeight = window.innerHeight;
+	const windowWidtht = window.innerWidth;
+	const numDivs = (windowHeight+windowWidtht)*4.5;
+	let renderHtml = '<div class="ctrl">';
+	renderHtml += '<button onclick="clearWindow()">Clear</button>';
+	renderHtml += '<button id="moved">0 Moves</button>';
+	renderHtml += '<button id="failed">0 Cell Failed</button>';
+	renderHtml += '</div>';
+	for(let i=0; i<=(numDivs+182); i++){
+		renderHtml+='<div class="dots" onmouseover="changeColor(this, event);" onmouseout="changeColor(this, event);"></div>';
+	}
+	document.body.innerHTML = renderHtml;
+	
+	let solvePercent = 0;
+	let cellFailed = 0;
+	let res = document.getElementById('moved');
+	let failed = document.getElementById('failed');
+	function changeColor(dot, event){
+		let className = dot.classList[0];
+		if(event.ctrlKey == true){
+			dot.classList.remove("dots");
+			dot.classList.add("dots-active");
+			solvePercent++;
+			res.innerHTML  = solvePercent + ' Moves';
+		}else if(event.altKey == true){
+			if(className == 'dots-active'){
+				if(solvePercent > 0){
+					dot.style.background = '#FF0000';
+					solvePercent--;
+					res.innerHTML  = solvePercent + ' Moves Remain';
+				}else{
+					
+				}
+			}else{
+				if(solvePercent > 0){
+					dot.style.background = '#FFF';
+					solvePercent--;
+					cellFailed++;
+					res.innerHTML  = solvePercent + ' Moves Remain';
+					failed.innerHTML  = cellFailed + ' Cell Failed';
+				}
+			}
+		}		
+	}
+	
+	function clearWindow(){
+		window.location.reload(1);
+	}
+</script>
