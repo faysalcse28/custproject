@@ -1,92 +1,205 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Custom JS Project</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-.ctrl{
-	width: 100%;
-	text-align: center;
-}
+<!doctype html>
+<html lang="en">
+  <head>
+  <title>CRUD</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+	<script src="FileSaver.js"></script>
+	<style>
+		.grid-style{
+			padding: 10px;
+			border: solid 2px green;
+			border-radius: 5px;
+			margin: auto;
+			z-index: 999;
+			background: ghostwhite;
+			display: none;
+			position: absolute;
+			top:0;
+			right: 35%;
+		}
+		
+		.height-100{
+			height: 100px !important;
+			padding: 10px;
+			cursor: pointer;
+		}
+		
+		.height-200{
+			height: 200px !important;
+			padding: 10px;
+			cursor: pointer;
+		}
+		
+		.height-300{
+			height: 300px !important;
+			padding: 10px;
+			cursor: pointer;
+		}
+		
+		.height-400{
+			height: 400px !important;
+			padding: 10px;
+			cursor: pointer;
+		}
+		
+		.height-500{
+			height: 500px !important;
+			padding: 10px;
+			cursor: pointer;
+		}
+		
+		#start{
+			cursor: pointer;
+			padding: 10px;
+			color: purple;
+			border: dotted 5px green;
+			margin: 0 auto;
+		}
+	</style>
+  </head>
+  <body>
+    <div id="crud-container" class="container">
+	  
+	</div>
+	<h1 class="col-3 text-center" id="start"> 
+		Create Layout
+	</h1>
 
-.ctrl button{
-    width: 200px;
-    height: 30px;
-    margin: 5px;
-    background: #C5221E;
-    color: #FFF;
-    border: none;
-}
+	<div id="grid-styling-block" class="grid-style col-4">
+		<h4>Set Grid Style</h4>
+		<div class="form-group">
+			<label for="grid-id">Section ID</label>
+			<input type="text" class="form-control" id="grid-id" placeholder="Section ID">
+		</div>
+		<div class="form-group">
+			<label for="grid-patern">Grid Patern</label>
+			<input type="text" class="form-control" id="grid-patern" placeholder="Example: 12 OR 6-6 OR 4-4-4">
+		</div>
+		<div class="form-group">
+			<label for="cust-class">Custom Class</label>
+			<input type="text" class="form-control" id="cust-class" placeholder="You custom class">
+		</div>
+		<div class="form-group text-right mt-1">
+			<button type="submit" id="create-grid" class="btn btn-primary">Done</button>
+			<button type="submit" onclick="cancelCreating()" class="btn btn-danger">Cancel</button>
+		</div>
+	</div>
 
-.dots{
-	height: 10px;
-	width: 10px;
-	float: right;
-	background-color: #000;
-}
-
-.dots-active{
-	height: 10px;
-	width: 10px;
-	float: right;
-	background-color: #FFF;
-}
-</style>
-</head>     
-
-<body>
-
-
-</body>
+	<div id="add-content-block" class="grid-style col-4">
+		<h4>Add Content</h4>
+		<!-- <div class="form-group"> -->
+			<!-- <label for="content">Content</label> -->
+			<!-- <input type="file" /> -->
+		<!-- </div> -->
+		<div class="form-group">
+			<label for="content">Content</label>
+			<textarea class="form-control height-200" id="content" placeholder="Your content here..."></textarea>
+		</div>
+		<div class="form-group">
+			<label for="cust-class">Custom Class</label>
+			<input type="text" class="form-control" id="grid-cust-class" placeholder="You custom class">
+		</div>
+		<div class="form-group text-right mt-1">
+			<button type="submit" id="add-content" class="btn btn-primary">Done</button>
+			<button type="submit" onclick="cancelCreating()" class="btn btn-danger">Cancel</button>
+		</div>
+	</div>
+  </body>
 </html>
-<script type="text/javascript">
-	const windowHeight = window.innerHeight;
-	const windowWidtht = window.innerWidth;
-	const numDivs = (windowHeight+windowWidtht)*3.99;
-	let renderHtml = '<div class="ctrl">';
-	renderHtml += '<h4>Press Ctrl draw a shape by moving mouse. After finish drawing the shape press Alt and move mouse over your shape. See your mouse moving capacity.</h4>';
-	renderHtml += '<button onclick="clearWindow()">Refresh</button>';
-	renderHtml += '<button id="moved">0 Moves</button>';
-	renderHtml += '<button id="failed">0 Cell Failed</button>';
-	renderHtml += '</div>';
-	for(let i=0; i<=(numDivs+182); i++){
-		renderHtml+='<div class="dots" onmouseover="changeColor(this, event);" onmouseout="changeColor(this, event);"></div>';
-	}
-	document.body.innerHTML = renderHtml;
+<script>
+	tinymce.init({
+		selector: '#content',
+		plugins: 'code',
+		//toolbar: 'code',
+		height: 500,
+		content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+	});
+
+	const crudContainer = document.querySelector("#crud-container");
+	const gridStylingBlock = document.querySelector("#grid-styling-block");
+	const addContentBlock = document.querySelector("#add-content-block");
+	const startEvnt = document.querySelector("#start");
 	
-	let solvePercent = 0;
-	let cellFailed = 0;
-	let res = document.getElementById('moved');
-	let failed = document.getElementById('failed');
-	function changeColor(dot, event){
-		let className = dot.classList[0];
-		if(event.ctrlKey == true){
-			dot.classList.remove("dots");
-			dot.classList.add("dots-active");
-			solvePercent++;
-			res.innerHTML  = solvePercent + ' Moves';
-		}else if(event.altKey == true){
-			if(className == 'dots-active'){
-				if(solvePercent > 0){
-					dot.style.background = '#FF0000';
-					solvePercent--;
-					res.innerHTML  = solvePercent + ' Moves Remain';
-				}else{
-					
-				}
-			}else{
-				if(solvePercent > 0){
-					dot.style.background = '#FFF';
-					solvePercent--;
-					cellFailed++;
-					res.innerHTML  = solvePercent + ' Moves Remain';
-					failed.innerHTML  = cellFailed + ' Cell Failed';
-				}
-			}
-		}		
+	const addContentEvnt = document.querySelector("#add-content");
+	const gridCustClass = document.querySelector("#grid-cust-class");
+	
+	const createGridEvnt = document.querySelector("#create-grid");
+	const gId = document.querySelector("#grid-id");
+	const custClass = document.querySelector("#cust-class");
+	const gClass = document.querySelector("#grid-patern");
+
+	startEvnt.addEventListener("click", (event) => {
+		gridStylingBlock.style.display = "block";
+		//document.getElementById("start").remove();
+	});
+
+	createGridEvnt.addEventListener("click", () => {
+		const rb = document.createElement('button');
+		rb.innerText = 'Remove Section';
+		rb.setAttribute("class", 'btn btn-sm btn-danger');
+		rb.setAttribute("id", `remove-btn-${gId.value}`);
+		let remove = removeRow.bind(gId.value);
+		rb.addEventListener("click", remove);
+		crudContainer.appendChild(rb);
+			
+		const grid = document.createElement('div');
+		grid.setAttribute("id", gId.value);
+		grid.setAttribute("class", `${custClass.value} row`);
+		crudContainer.appendChild(grid);
+		
+		const colContainer = document.querySelector('#'+gId.value);
+		let patternStr = gClass.value
+		var patternArray = patternStr.split('-');
+		patternArray.forEach(function(item, index){
+			const cols = document.createElement('div');
+			cols.setAttribute("id", `${gId.value}-child-${index}`);
+			cols.setAttribute("class", `col-${item} border`);
+			cols.innerHTML = "<h6 class='mt-2 text-center'>Click To Add Content</h6>";
+			cols.addEventListener("click", addContent);
+			colContainer.appendChild(cols);
+		});
+		gridStylingBlock.style.display = "none";
+		gId.value = '';
+		custClass.value = '';
+		gClass.value = '';
+	});
+
+	let toSetContent = null;
+	function addContent(){
+		addContentBlock.style.display = "block";
+		toSetContent = document.getElementById(this.id);
+		tinymce.get('content').setContent(toSetContent.innerHTML); 
+		gridCustClass.value = toSetContent.classList;
+	};
+
+	addContentEvnt.addEventListener("click", () => {
+		let inputContent = tinymce.get('content').save();
+		
+		if(typeof(gridCustClass.value) != undefined){
+			toSetContent.removeAttribute('class');
+			toSetContent.setAttribute('class', gridCustClass.value);
+		}
+		
+		toSetContent.innerHTML = inputContent;
+		addContentBlock.style.display = "none";
+		gridCustClass.value = '';
+	});
+	
+	function cancelCreating(){
+		addContentBlock.style.display = "none";
+		gridStylingBlock.style.display = "none";
+		gId.value = '';
+		custClass.value = '';
+		gClass.value = '';
+		gridCustClass.value = '';
 	}
 	
-	function clearWindow(){
-		window.location.reload(1);
+	function removeRow(){
+		document.getElementById("remove-btn-"+this).remove();
+		document.getElementById(this).remove();
 	}
 </script>
