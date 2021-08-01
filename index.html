@@ -137,6 +137,23 @@
 	});
 
 	createGridEvnt.addEventListener("click", () => {
+		const idPattern = /^[a-zA-Z0-9.-]*$/
+		let idCode = gId.value;
+		if (!idPattern.test(idCode))
+		{
+			alert("Only 0-9 a-zA-Z and - allow");
+			return false;
+		}
+		
+		const gridPattern = /^[0-9.-]*$/
+		let gridCode = gClass.value;
+		if (!gridPattern.test(gridCode))
+		{
+			alert("Only 0-9 and - allow");
+			return false;
+		}
+		
+		
 		const rb = document.createElement('button');
 		rb.innerText = 'Remove Section';
 		rb.setAttribute("class", 'btn btn-sm btn-danger');
@@ -154,12 +171,14 @@
 		let patternStr = gClass.value
 		var patternArray = patternStr.split('-');
 		patternArray.forEach(function(item, index){
-			const cols = document.createElement('div');
-			cols.setAttribute("id", `${gId.value}-child-${index}`);
-			cols.setAttribute("class", `col-${item} border`);
-			cols.innerHTML = "<h6 class='mt-2 text-center'>Click To Add Content</h6>";
-			cols.addEventListener("click", addContent);
-			colContainer.appendChild(cols);
+			if(item != ''){
+				const cols = document.createElement('div');
+				cols.setAttribute("id", `${gId.value}-child-${index}`);
+				cols.setAttribute("class", `col-${item} border`);
+				cols.innerHTML = "<h6 class='mt-2 text-center'>Click To Add Content</h6>";
+				cols.addEventListener("click", addContent);
+				colContainer.appendChild(cols);
+			}
 		});
 		gridStylingBlock.style.display = "none";
 		gId.value = '';
