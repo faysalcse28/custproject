@@ -143,6 +143,9 @@
 		{
 			alert("Only 0-9 a-zA-Z and - allow");
 			return false;
+		}else if(idCode == '' || idCode == null || idCode == undefined){
+			alert("Section ID is empty");
+			return false;
 		}
 		
 		const gridPattern = /^[0-9.-]*$/
@@ -150,6 +153,9 @@
 		if (!gridPattern.test(gridCode))
 		{
 			alert("Only 0-9 and - allow");
+			return false;
+		}else if(gridCode == '' || gridCode == null || gridCode == undefined){
+			alert("Section ID is empty");
 			return false;
 		}
 		
